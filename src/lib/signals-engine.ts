@@ -1,5 +1,5 @@
 /**
- * SignalStack Signal Engine
+ * Pulsadar Signal Engine
  *
  * This module handles:
  * 1. Fetching posts from multiple platforms (Reddit, HN, Twitter, SO, GitHub)
@@ -35,7 +35,7 @@ async function fetchRedditPosts(keywords: string[]): Promise<RawPost[]> {
       const res = await fetch(
         `https://www.reddit.com/search.json?q=${encodeURIComponent(keyword)}&sort=new&limit=25&t=day`,
         {
-          headers: { "User-Agent": "SignalStack/1.0" },
+          headers: { "User-Agent": "Pulsadar/1.0" },
           next: { revalidate: 300 }, // cache 5 min
         }
       );
