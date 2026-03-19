@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createSupabaseBrowser } from "A/lib/supabase-browser";
+import { createSupabaseBrowser } from "@/lib/supabase-browser";
 
 export function AddProductModal({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState("");
@@ -95,3 +95,74 @@ export function AddProductModal({ onClose }: { onClose: () => void }) {
               required
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5">
+              Keywords (comma-separated) *
+            </label>
+            <input
+              type="text"
+              value={keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+              className="w-full bg-[#0a0a0f] border border-[#1e1e2e] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500"
+              placeholder="e.g., uptime monitoring, website monitoring, downtime alerts"
+              required
+            />
+            <p className="text-xs text-slate-500 mt-1">
+              These keywords are used to find relevant signals across platforms
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5">
+              Competitors (comma-separated)
+            </label>
+            <input
+              type="text"
+              value={competitors}
+              onChange={(e) => setCompetitors(e.target.value)}
+              className="w-full bg-[#0a0a0f] border border-[#1e1e2e] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500"
+              placeholder="e.g., Pingdom, UptimeRobot, BetterUptime"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5">
+              Product URL
+            </label>
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="w-full bg-[#0a0a0f] border border-[#1e1e2e] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500"
+              placeholder="https://yourproduct.com"
+            />
+          </div>
+
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-lg px-4 py-2.5">
+              {error}
+            </div>
+          )}
+
+          <div className="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-sm text-slate-400 hover:text-white rounded-lg"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white px-6 py-2 rounded-lg text-sm font-medium"
+            >
+              {loading ? "Adding..." : "Start Monitoring"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
