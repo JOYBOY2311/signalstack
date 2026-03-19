@@ -70,9 +70,9 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-sm font-bold text-white">
-              S
+              P
             </div>
-            <span className="font-bold text-lg">SignalStack</span>
+            <span className="font-bold text-lg">Pulsadar</span>
           </div>
           <div className="flex items-center gap-4">
             <Link
@@ -101,7 +101,7 @@ export default function LandingPage() {
             Stop missing customers who are already looking for you
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            SignalStack monitors Reddit, Hacker News, Twitter, and 3 more
+            Pulsadar monitors Reddit, Hacker News, Twitter, and 3 more
             platforms — surfaces buying-intent signals with AI scoring and
             response drafts. Find your next 100 customers for $10/mo.
           </p>
@@ -161,7 +161,7 @@ export default function LandingPage() {
               {
                 step: "01",
                 title: "Describe your product",
-                desc: "Enter your product name, keywords, and competitors. SignalStack starts scanning immediately.",
+                desc: "Enter your product name, keywords, and competitors. Pulsadar starts scanning immediately.",
               },
               {
                 step: "02",
@@ -200,7 +200,7 @@ export default function LandingPage() {
             — Every indie founder, at least once
           </p>
           <p className="text-indigo-400 font-medium mt-4">
-            SignalStack makes sure that never happens again.
+            Pulsadar makes sure that never happens again.
           </p>
         </div>
       </section>
@@ -285,9 +285,9 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-xs font-bold text-white">
-              S
+              P
             </div>
-            <span className="font-semibold">SignalStack</span>
+            <span className="font-semibold">Pulsadar</span>
           </div>
           <div className="flex items-center gap-6 text-sm text-slate-500">
             <Link href="/terms" className="hover:text-slate-300">Terms</Link>
@@ -295,7 +295,7 @@ export default function LandingPage() {
             <Link href="/refund" className="hover:text-slate-300">Refund Policy</Link>
           </div>
           <p className="text-sm text-slate-600">
-            © {new Date().getFullYear()} SignalStack. All rights reserved.
+            © {new Date().getFullYear()} Pulsadar. All rights reserved.
           </p>
         </div>
       </footer>
