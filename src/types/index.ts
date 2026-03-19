@@ -62,7 +62,7 @@ export interface DashboardStats {
   top_sources: { source: SignalSource; count: number }[];
 }
 
-export const TRERE_LIMITS: Record<SubscriptionTier, {
+export const TIER_LIMITS: Record<SubscriptionTier, {
   products: number;
   signals_per_day: number;
   ai_drafts: boolean;
