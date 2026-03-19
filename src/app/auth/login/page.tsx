@@ -37,13 +37,13 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-sm font-bold text-white">
-              S
+              P
             </div>
-            <span className="font-bold text-lg">SignalStack</span>
+            <span className="font-bold text-lg">Pulsadar</span>
           </Link>
           <h1 className="text-2xl font-bold">Welcome back</h1>
           <p className="text-slate-400 text-sm mt-1">
-            Log in to your SignalStack dashboard
+            Log in to your Pulsadar dashboard
           </p>
         </div>
 
