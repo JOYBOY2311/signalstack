@@ -39,9 +39,9 @@ export function DashboardClient({ profile, products, signals }: Props) {
         <div className="p-5 border-b border-[#1e1e2e]">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-xs font-bold text-white">
-              S
+              P
             </div>
-            <span className="font-bold">SignalStack</span>
+            <span className="font-bold">Pulsadar</span>
           </div>
         </div>
 
