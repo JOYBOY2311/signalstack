@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createSupabaseBrowser } from "A/lib/supabase-browser";
+import { createSupabaseBrowser } from "@/lib/supabase-browser";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -82,9 +82,9 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-50 disabled:opacity-50 text-white py-2.5 rounded-lg font-medium text-sm"
+            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white py-2.5 rounded-lg font-medium text-sm"
           >
-            { loading ? "Logging in..." : "Log in"}
+            {loading ? "Logging in..." : "Log in"}
           </button>
         </form>
 
