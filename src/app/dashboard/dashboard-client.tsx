@@ -35,7 +35,7 @@ export function DashboardClient({ profile, products, signals }: Props) {
   return (
     <div className="min-h-screen flex">
       {/* Sidebar */}
-      <aside className="v-64 border-r border-[#1e1e2e] bg-[#0c0c14] flex flex-col h-screen sticky top-0">
+      <aside className="w-64 border-r border-[#1e1e2e] bg-[#0c0c14] flex flex-col h-screen sticky top-0">
         <div className="p-5 border-b border-[#1e1e2e]">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center text-xs font-bold text-white">
@@ -141,7 +141,38 @@ export function DashboardClient({ profile, products, signals }: Props) {
             </button>
           ))}
         </div>
-        >
+
+        {/* Signals Feed */}
+        <div className="space-y-3">
+          {filteredSignals.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="text-4xl mb-4">📡</div>
+              <h3 className="text-lg font-semibold mb-2">No signals yet</h3>
+              <p className="text-slate-400 text-sm max-w-md mx-auto">
+                {products.length === 0
+                  ? "Add your first product to start scanning for buying-intent signals across the web."
+                  : "Signals are being scanned. Check back in a few minutes for fresh leads."}
+              </p>
+              {products.length === 0 && (
+                <button
+                  onClick={() => setShowAddProduct(true)}
+                  className="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-lg text-sm font-medium"
+                >
+                  Add Your First Product
+                </button>
+              )}
+            </div>
+          ) : (
+            filteredSignals.map((signal) => (
+              <SignalCard key={signal.id} signal={signal} />
+            ))
+          )}
+        </div>
+      </main>
+
+      {showAddProduct && (
+        <AddProductModal onClose={() => setShowAddProduct(false)} />
+      )}
     </div>
-  
- "
+  );
+}
