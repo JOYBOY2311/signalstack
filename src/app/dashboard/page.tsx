@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createSupabaseServer } from "A/lib/supabase-server";
+import { createSupabaseServer } from "@/lib/supabase-server";
 import { DashboardClient } from "./dashboard-client";
 
 export default async function DashboardPage() {
@@ -42,6 +42,5 @@ export default async function DashboardPage() {
       products={products || []}
       signals={signals || []}
     />
-  
-  ;
+  );
 }
