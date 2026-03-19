@@ -52,3 +52,70 @@ export function SignalCard({ signal }: { signal: Signal }) {
           <p className="text-sm text-slate-400 line-clamp-2">
             {signal.ai_summary}
           </p>
+
+          {/* Expanded content */}
+          {expanded && (
+            <div className="mt-4 space-y-3">
+              {signal.content && (
+                <div className="bg-[#0a0a0f] rounded-lg p-4 text-sm text-slate-400 max-h-40 overflow-y-auto">
+                  {signal.content}
+                </div>
+              )}
+
+              {signal.ai_draft_response && (
+                <div className="bg-indigo-500/5 border border-indigo-500/10 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-medium text-indigo-400">
+                      AI-Drafted Response
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        copyDraft();
+                      }}
+                      className="text-xs text-indigo-400 hover:text-indigo-300"
+                    >
+                      {copied ? "✓ Copied!" : "Copy"}
+                    </button>
+                  </div>
+                  <p className="text-sm text-slate-300">
+                    {signal.ai_draft_response}
+                  </p>
+                </div>
+              )}
+
+              <div className="flex items-center gap-3">
+                <a
+                  href={signal.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg font-medium"
+                >
+                  Open Original →
+                </a>
+                <button
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs text-slate-500 hover:text-slate-300 px-3 py-1.5 rounded-lg border border-[#1e1e2e]"
+                >
+                  Mark as Actioned
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Intent indicator */}
+        <div
+          className={`w-3 h-3 rounded-full mt-1.5 flex-shrink-0 ${
+            signal.intent_level === "high"
+              ? "bg-green-400"
+              : signal.intent_level === "medium"
+              ? "bg-yellow-400"
+              : "bg-slate-600"
+          }`}
+        />
+      </div>
+    </div>
+  );
+}
