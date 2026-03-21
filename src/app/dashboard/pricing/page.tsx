@@ -131,7 +131,7 @@ export default function PricingPage() {
             },
           },
         };
-        const rzp = new (window as Record<string, unknown> & { Razorpay: new (opts: unknown) => { open: () => void } }).Razorpay(options);
+        const rzp = new (window as unknown as Record<string, unknown> & { Razorpay: new (opts: unknown) => { open: () => void } }).Razorpay(options);
         rzp.open();
       };
       document.body.appendChild(script);
