@@ -46,8 +46,8 @@ export interface UserProfile {
   email: string;
   full_name: string | null;
   tier: SubscriptionTier;
-  stripe_customer_id: string | null;
-  stripe_subscription_id: string | null;
+  razorpay_subscription_id: string | null;
+  has_used_trial: boolean;
   products_limit: number;
   signals_daily_limit: number;
   ai_drafts_enabled: boolean;
