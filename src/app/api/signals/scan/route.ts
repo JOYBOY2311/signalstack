@@ -3,14 +3,14 @@ import { createSupabaseAdmin } from "@/lib/supabase-server";
 import { scanForSignals } from "@/lib/signals-engine";
 
 /**
- * POST /api/signals/scan
- * Triggered by cron job or manual scan.
+ * GET /api/signals/scan
+ * Triggered by Vercel Cron (every 4 hours).
  * Scans all active products for new signals.
  *
- * Requires: Authorization header with service role key
+ * Vercel crons send GET requests with Authorization header.
  */
-export async function POST(request: Request) {
-  // Verify authorization (cron secret or service role)
+export async function GET(request: Request) {
+  // Verify authorization (CRON_SECRET)
   const authHeader = request.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
 
@@ -102,3 +102,6 @@ export async function POST(request: Request) {
     timestamp: new Date().toISOString(),
   });
 }
+
+// Also support POST for manual triggers
+export { GET as POST }
