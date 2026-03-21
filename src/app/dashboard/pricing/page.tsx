@@ -28,7 +28,7 @@ const plans = [
     priceUSD: "$10",
     priceINR: "₹799",
     period: "/month",
-    description: "Fr indie hackers getting serious about leads",
+    description: "For indie hackers getting serious about leads",
     features: [
       "3 products",
       "50 signals/day",
@@ -122,7 +122,7 @@ export default function PricingPage() {
           description: `${tier.charAt(0).toUpperCase() + tier.slice(1)} Plan - AI Buying Intent Radar`,
           theme: { color: "#6366f1" },
           handler: function () {
-            // Payment successful ℴ redirect to dashboard
+            // Payment successful — redirect to dashboard
             router.push("/dashboard?upgraded=true");
           },
           modal: {
@@ -282,3 +282,5 @@ export default function PricingPage() {
         </div>
       </div>
     </div>
+  );
+}
