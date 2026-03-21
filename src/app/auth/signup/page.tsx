@@ -37,7 +37,10 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-6">
+      <div className="min-h-screen flex items-center justify-center px-6 relative">
+        <Link href="/" className="absolute top-6 left-6 text-sm text-slate-400 hover:text-white transition">
+          ← Back to home
+        </Link>
         <div className="max-w-md w-full text-center">
           <div className="text-5xl mb-4">📧</div>
           <h1 className="text-2xl font-bold mb-2">Check your email</h1>
@@ -45,13 +48,19 @@ export default function SignupPage() {
             We sent a confirmation link to <strong>{email}</strong>. Click it to
             activate your account and start catching signals.
           </p>
+          <Link href="/" className="inline-block mt-6 text-sm text-indigo-400 hover:text-indigo-300">
+            ← Back to home
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6">
+    <div className="min-h-screen flex items-center justify-center px-6 relative">
+      <Link href="/" className="absolute top-6 left-6 text-sm text-slate-400 hover:text-white transition">
+        ← Back to home
+      </Link>
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
