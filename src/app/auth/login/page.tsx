@@ -32,7 +32,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6">
+    <div className="min-h-screen flex items-center justify-center px-6 relative">
+      <Link href="/" className="absolute top-6 left-6 text-sm text-slate-400 hover:text-white transition">
+        ← Back to home
+      </Link>
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-6">
