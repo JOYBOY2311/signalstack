@@ -46,8 +46,8 @@ export interface UserProfile {
   email: string;
   full_name: string | null;
   tier: SubscriptionTier;
-  razorpay_subscription_id: string | null;
-  has_used_trial: boolean;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
   products_limit: number;
   signals_daily_limit: number;
   ai_drafts_enabled: boolean;
@@ -62,14 +62,37 @@ export interface DashboardStats {
   top_sources: { source: SignalSource; count: number }[];
 }
 
-export const TIER_LIMITS: Record<SubscriptionTier, {
-  products: number;
-  signals_per_day: number;
-  ai_drafts: boolean;
-  price_monthly: number;
-}> = {
-  free: { products: 1, signals_per_day: 10, ai_drafts: false, price_monthly: 0 },
-  starter: { products: 3, signals_per_day: 50, ai_drafts: false, price_monthly: 10 },
-  growth: { products: 10, signals_per_day: 999999, ai_drafts: true, price_monthly: 29 },
-  team: { products: 999999, signals_per_day: 999999, ai_drafts: true, price_monthly: 79 },
+export const TIER_LIMITS: Record<
+  SubscriptionTier,
+  {
+    products: number;
+    signals_per_day: number;
+    ai_drafts: boolean;
+    price_monthly: number;
+  }
+> = {
+  free: {
+    products: 1,
+    signals_per_day: 10,
+    ai_drafts: false,
+    price_monthly: 0,
+  },
+  starter: {
+    products: 3,
+    signals_per_day: 50,
+    ai_drafts: false,
+    price_monthly: 10,
+  },
+  growth: {
+    products: 10,
+    signals_per_day: 500,
+    ai_drafts: true,
+    price_monthly: 29,
+  },
+  team: {
+    products: 25,
+    signals_per_day: 2000,
+    ai_drafts: true,
+    price_monthly: 79,
+  },
 };
