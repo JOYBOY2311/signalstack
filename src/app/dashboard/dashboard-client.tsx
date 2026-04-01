@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { getIntentColor, getSourceIcon, timeAgo } from "@/lib/utils";
 import type { Signal, Product, UserProfile } from "@/types";
-import { TIER_LIMITS, type SubscriptionTier } from "@/types";
 import { AddProductModal } from "@/components/add-product-modal";
 import { SignalCard } from "@/components/signal-card";
 
@@ -20,93 +18,23 @@ export function DashboardClient({ profile, products, signals }: Props) {
     "all"
   );
   const [activeProduct, setActiveProduct] = useState<string | "all">("all");
-  const [scanning, setScanning] = useState(false);
-  const [scanResult, setScanResult] = useState<string | null>(null);
-  const [localSignals, setLocalSignals] = useState(signals);
-  const router = useRouter();
+  const [minScore, setMinScore] = useState(0);
 
-  const tier = (profile?.tier || "free") as SubscriptionTier;
-  const limits = TIER_LIMITS[tier];
-
-  const filteredSignals = localSignals.filter((s) => {
+  const filteredSignals = signals.filter((s) => {
     if (filter !== "all" && s.intent_level !== filter) return false;
     if (activeProduct !== "all" && s.product_id !== activeProduct) return false;
+    if (s.intent_score < minScore) return false;
     return true;
   });
 
-  const highCount = localSignals.filter(
-    (s) => s.intent_level === "high"
-  ).length;
-  const mediumCount = localSignals.filter(
+  const highCount = signals.filter((s) => s.intent_level === "high").length;
+  const mediumCount = signals.filter(
     (s) => s.intent_level === "medium"
   ).length;
-  const todayCount = localSignals.filter(
+  const todayCount = signals.filter(
     (s) =>
       new Date(s.detected_at).toDateString() === new Date().toDateString()
   ).length;
-
-  const handleScan = useCallback(async () => {
-    // Pick which product to scan
-    const targetProduct =
-      activeProduct !== "all"
-        ? activeProduct
-        : products.length > 0
-        ? products[0].id
-        : null;
-
-    if (!targetProduct) {
-      setScanResult("Add a product first to start scanning.");
-      return;
-    }
-
-    setScanning(true);
-    setScanResult(null);
-
-    try {
-      const res = await fetch("/api/signals/scan-manual", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: targetProduct }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setScanResult(data.error || "Scan failed");
-      } else {
-        setScanResult(
-          `Found ${data.signals_found} signals, saved ${data.signals_saved} new. (${data.signals_today}/${data.daily_limit} today)`
-        );
-        // Refresh the page to show new signals
-        router.refresh();
-      }
-    } catch {
-      setScanResult("Scan failed. Please try again.");
-    } finally {
-      setScanning(false);
-    }
-  }, [activeProduct, products, router]);
-
-  const handleAction = useCallback(
-    async (signalId: string) => {
-      try {
-        await fetch("/api/signals/action", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ signalId, action: "actioned" }),
-        });
-        // Update local state
-        setLocalSignals((prev) =>
-          prev.map((s) =>
-            s.id === signalId ? { ...s, is_actioned: true, is_read: true } : s
-          )
-        );
-      } catch {
-        // Silently fail
-      }
-    },
-    []
-  );
 
   return (
     <div className="min-h-screen flex">
@@ -121,7 +49,7 @@ export function DashboardClient({ profile, products, signals }: Props) {
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-1">
           <div className="text-xs text-slate-500 uppercase tracking-wider font-medium mb-3 px-3">
             Products
           </div>
@@ -146,98 +74,34 @@ export function DashboardClient({ profile, products, signals }: Props) {
               }`}
             >
               {p.name}
-              <span className="text-xs text-slate-600 ml-1">
-                ({p.signals_today})
-              </span>
             </button>
           ))}
-          {products.length < limits.products && (
-            <button
-              onClick={() => setShowAddProduct(true)}
-              className="w-full text-left px-3 py-2 rounded-lg text-sm text-indigo-400 hover:bg-indigo-500/10"
-            >
-              + Add Product
-            </button>
-          )}
+          <button
+            onClick={() => setShowAddProduct(true)}
+            className="w-full text-left px-3 py-2 rounded-lg text-sm text-indigo-400 hover:bg-indigo-500/10"
+          >
+            + Add Product
+          </button>
         </nav>
 
-        <div className="p-4 border-t border-[#1e1e2e] space-y-2">
-          <div className="text-xs text-slate-500">Plan</div>
+        <div className="p-4 border-t border-[#1e1e2e]">
+          <div className="text-xs text-slate-500 mb-1">Plan</div>
           <div className="text-sm font-medium capitalize">
-            {tier} plan
+            {profile?.tier || "free"} plan
           </div>
-          {tier === "free" && (
+          {profile?.tier === "free" && (
             <a
-              href="/dashboard/pricing"
-              className="block text-xs text-indigo-400 hover:text-indigo-300"
+              href="/dashboard/billing"
+              className="text-xs text-indigo-400 hover:text-indigo-300"
             >
-              Upgrade for more signals →
+              Upgrade to Starter &rarr;
             </a>
           )}
-          <div className="text-xs text-slate-600 mt-1">
-            {limits.products === 999999
-              ? "Unlimited"
-              : `${products.length}/${limits.products}`}{" "}
-            products •{" "}
-            {limits.signals_per_day === 999999
-              ? "Unlimited"
-              : `${limits.signals_per_day}/day`}
-          </div>
         </div>
       </aside>
 
       {/* Main */}
-      <main className="flex-1 p-8 overflow-y-auto">
-        {/* Header with Scan button */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-bold">Signal Feed</h1>
-            <p className="text-sm text-slate-500 mt-1">
-              Buying-intent signals from across the web
-            </p>
-          </div>
-          <button
-            onClick={handleScan}
-            disabled={scanning || products.length === 0}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all ${
-              scanning
-                ? "bg-indigo-600/50 text-indigo-300 cursor-wait"
-                : "bg-indigo-600 hover:bg-indigo-500 text-white"
-            } disabled:opacity-40 disabled:cursor-not-allowed`}
-          >
-            {scanning ? (
-              <>
-                <span className="animate-spin">⟳</span>
-                Scanning...
-              </>
-            ) : (
-              <>
-                <span>📡</span>
-                Scan Now
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Scan result banner */}
-        {scanResult && (
-          <div
-            className={`mb-6 px-4 py-3 rounded-xl text-sm ${
-              scanResult.includes("failed") || scanResult.includes("limit")
-                ? "bg-red-500/10 border border-red-500/20 text-red-400"
-                : "bg-green-500/10 border border-green-500/20 text-green-400"
-            }`}
-          >
-            {scanResult}
-            <button
-              onClick={() => setScanResult(null)}
-              className="float-right text-slate-500 hover:text-white"
-            >
-              ×
-            </button>
-          </div>
-        )}
-
+      <main className="flex-1 p-8">
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4 mb-8">
           <div className="bg-[#12121a] border border-[#1e1e2e] rounded-xl p-5">
@@ -265,7 +129,7 @@ export function DashboardClient({ profile, products, signals }: Props) {
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-6 flex-wrap">
           <span className="text-sm text-slate-500">Filter:</span>
           {(["all", "high", "medium", "low"] as const).map((f) => (
             <button
@@ -281,10 +145,42 @@ export function DashboardClient({ profile, products, signals }: Props) {
             >
               {f}{" "}
               {f !== "all" &&
-                `(${localSignals.filter((s) => s.intent_level === f).length})`}
+                `(${signals.filter((s) => s.intent_level === f).length})`}
             </button>
           ))}
+
+          {/* Confidence threshold slider */}
+          <div className="flex items-center gap-2 ml-auto bg-[#12121a] border border-[#1e1e2e] rounded-lg px-3 py-1.5">
+            <span className="text-xs text-slate-500 whitespace-nowrap">
+              Min score:
+            </span>
+            <input
+              type="range"
+              min={0}
+              max={90}
+              step={10}
+              value={minScore}
+              onChange={(e) => setMinScore(Number(e.target.value))}
+              className="w-20 h-1 accent-indigo-500 bg-slate-700 rounded-full cursor-pointer"
+            />
+            <span className="text-xs font-mono text-indigo-400 w-8 text-right">
+              {minScore}%
+            </span>
+          </div>
         </div>
+
+        {/* Active filter info */}
+        {minScore > 0 && (
+          <div className="mb-4 text-xs text-slate-500 bg-[#12121a] border border-[#1e1e2e] rounded-lg px-3 py-2 inline-flex items-center gap-2">
+            Showing signals with intent score &ge; {minScore}%
+            <button
+              onClick={() => setMinScore(0)}
+              className="text-indigo-400 hover:text-indigo-300"
+            >
+              Clear
+            </button>
+          </div>
+        )}
 
         {/* Signals Feed */}
         <div className="space-y-3">
@@ -295,32 +191,22 @@ export function DashboardClient({ profile, products, signals }: Props) {
               <p className="text-slate-400 text-sm max-w-md mx-auto">
                 {products.length === 0
                   ? "Add your first product to start scanning for buying-intent signals across the web."
-                  : 'Click "Scan Now" to find buying-intent signals for your products across Reddit, Hacker News, Stack Overflow, and more.'}
+                  : minScore > 0
+                  ? `No signals match the ${minScore}% minimum score threshold. Try lowering it to see more results.`
+                  : "Signals are being scanned. Check back in a few minutes for fresh leads."}
               </p>
-              {products.length === 0 ? (
+              {products.length === 0 && (
                 <button
                   onClick={() => setShowAddProduct(true)}
                   className="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-lg text-sm font-medium"
                 >
                   Add Your First Product
                 </button>
-              ) : (
-                <button
-                  onClick={handleScan}
-                  disabled={scanning}
-                  className="mt-4 bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-lg text-sm font-medium disabled:opacity-50"
-                >
-                  {scanning ? "Scanning..." : "Scan Now"}
-                </button>
               )}
             </div>
           ) : (
             filteredSignals.map((signal) => (
-              <SignalCard
-                key={signal.id}
-                signal={signal}
-                onAction={handleAction}
-              />
+              <SignalCard key={signal.id} signal={signal} />
             ))
           )}
         </div>
